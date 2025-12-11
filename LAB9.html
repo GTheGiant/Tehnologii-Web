@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pagina șirului aₙ = n² + 1</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7fa;
+            margin: 40px;
+            text-align: center;
+        }
+        h1 {
+            color: #2c3e50;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        input, button {
+            padding: 10px;
+            font-size: 16px;
+            margin: 10px;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #bdc3c7;
+            padding: 12px;
+            text-align: center;
+        }
+        th {
+            background-color: #3498db;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .error {
+            color: #e74c3c;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Șirul aₙ = n² + 1</h1>
+    
+    <?php
+    $k = 10; // Valoare implicită
+    $error = "";
+
+    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["k"])) {
+        $input_k = $_POST["k"];
+
+        if (!is_numeric($input_k) || $input_k <= 0 || $input_k != (int)$input_k) {
+            $error = "Te rog introdu un număr natural pozitiv!";
+        } else {
+            $k = (int)$input_k;
+        }
+    }
+    ?>
+    
+    <form method="POST" action="">
+        <p>Introdu numărul de termeni pe care vrei să-i vezi:</p>
+        <input type="number" name="k" min="1" value="<?php echo htmlspecialchars($k); ?>" placeholder="ex: 10">
+        <button type="submit">Afișează termenii</button>
+    </form>
+    
+    <?php
+    if ($error) {
+        echo "<div class='error'>$error</div>";
+    }
+
+    if (!$error) {
+        echo "<h2>Primii $k termeni ai șirului aₙ = n² + 1</h2>";
+        echo "<table>";
+        echo "<thead>";
+        echo "<tr><th>n</th><th>Calcul</th><th>aₙ</th></tr>";
+        echo "</thead>";
+        echo "<tbody>";
+        
+        for ($n = 1; $n <= $k; $n++) {
+            $an = $n * $n + 1;
+            echo "<tr>";
+            echo "<td>$n</td>";
+            echo "<td>$n² + 1</td>";
+            echo "<td><strong>$an</strong></td>";
+            echo "</tr>";
+        }
+        
+        echo "</tbody>";
+        echo "</table>";
+    }
+    ?>
+</div>
+</body>
+</html>

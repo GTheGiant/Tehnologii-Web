@@ -1,0 +1,51 @@
+<?php
+    // Inițializare variabile
+    $k = 10; // Valoare implicită
+    $error = "";
+    
+    // Procesare formular
+    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["k"])) {
+        $input_k = $_POST["k"];
+        
+        // Validare
+        if (!is_numeric($input_k) || $input_k <= 0 || $input_k != (int)$input_k) {
+            $error = "Te rog introdu un număr natural pozitiv!";
+        } else {
+            $k = (int)$input_k;
+        }
+    }
+    ?>
+    
+    <form method="POST" action="">
+        <p>Introdu numărul de termeni pe care vrei să-i vezi:</p>
+        <input type="number" name="k" min="1" value="<?php echo htmlspecialchars($k); ?>" placeholder="ex: 10">
+        <button type="submit">Afișează termenii</button>
+    </form>
+    
+    <?php
+    if ($error) {
+        echo "<div class='error'>$error</div>";
+    }
+    
+    // Afișare tabel
+    if (!$error) {
+        echo "<h2>Primii $k termeni ai șirului aₙ = n² + 1</h2>";
+        echo "<table>";
+        echo "<thead>";
+        echo "<tr><th>n</th><th>Calcul</th><th>aₙ</th></tr>";
+        echo "</thead>";
+        echo "<tbody>";
+        
+        for ($n = 1; $n <= $k; $n++) {
+            $an = $n * $n + 1;
+            echo "<tr>";
+            echo "<td>$n</td>";
+            echo "<td>$n² + 1</td>";
+            echo "<td><strong>$an</strong></td>";
+            echo "</tr>";
+        }
+        
+        echo "</tbody>";
+        echo "</table>";
+    }
+    ?>

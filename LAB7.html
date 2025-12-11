@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personalizare Stil - 3 Butoane</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 40px;
+            min-height: 100vh;
+            background-color: #f0f4f8;
+            background-image: url('');
+            background-size: cover;
+            background-position: center;
+            transition: background-color 0.5s ease, background-image 0.8s ease;
+            color: #333;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 40px;
+        }
+
+        .butoane {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 40px;
+        }
+
+        button {
+            padding: 14px 28px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        button:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+
+        #btnFundal {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+        }
+
+        #btnImagine {
+            background: linear-gradient(45deg, #1e90ff, #00c3ff);
+            color: white;
+        }
+
+        #btnText {
+            background: linear-gradient(45deg, #9c27b0, #e91e63);
+            color: white;
+        }
+
+        .paragraf {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            font-size: 18px;
+            line-height: 1.7;
+            transition: color 0.5s ease;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Personalizează aspectul paginii</h1>
+
+        <div class="butoane">
+            <button id="btnFundal">Culoare Fundal</button>
+            <button id="btnImagine">Imagine Fundal</button>
+            <button id="btnText">Culoare Text</button>
+        </div>
+
+        <div class="paragraf">
+            <strong>Paragraf 1:</strong> Aceasta este o pagină web interactivă creată special pentru tine. Poți schimba culoarea fundalului, imaginea de fundal sau culoarea textului din paragrafe cu doar un click!
+        </div>
+
+        <div class="paragraf">
+            <strong>Paragraf 2:</strong> Apasă pe butoane și vezi cum se schimbă totul în timp real. Este distractiv și util pentru a învăța JavaScript și manipularea DOM.
+        </div>
+
+        </div>
+
+        <div class="paragraf">
+            <strong>Paragraf 3:</strong> Toate modificările se fac instantaneu folosind JavaScript pur – fără reîncărcarea paginii. Încearcă acum!
+        </div>
+    </div>
+
+    <script>
+
+        const culoriFundal = [
+            '#f0f4f8', '#e8f5e9', '#fff3e0', '#f3e5f5', '#e1f5fe',
+            '#ffebee', '#e8eaf6', '#e0f2f1', '#fff8e1', '#fce4ec'
+        ];
+
+        const imaginiFundal = [
+            'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1400',
+            'https://images.unsplash.com/photo-1511884642898-4c92249e20b6?w=1400',
+            'https://images.unsplash.com/photo-1497436072909-60f360e1d9b1?w=1400',
+            'https://images.unsplash.com/photo-1557672172-298e090bd0f1?w=1400',
+            'https://images.unsplash.com/photo-1540206395-68808572332f?w=1400',
+            'https://images.unsplash.com/photo-1501594907352-04cda38ebc29?w=1400'
+        ];
+
+        const culoriText = ['#2c3e50', '#c0392b', '#8e44ad', '#16a085', '#d35400', '#2980b9', '#27ae60'];
+
+        let indexCuloare = 0;
+        let indexImagine = 0;
+        let indexText = 0;
+
+        document.getElementById('btnFundal').addEventListener('click', function() {
+            indexCuloare = (indexCuloare + 1) % culoriFundal.length;
+            document.body.style.backgroundColor = culoriFundal[indexCuloare];
+            document.body.style.backgroundImage = 'none'; // elimină imaginea dacă era
+        });
+
+        document.getElementById('btnImagine').addEventListener('click', function() {
+            indexImagine = (indexImagine + 1) % imaginiFundal.length;
+            document.body.style.backgroundImage = `url('${imaginiFundal[indexImagine]}')`;
+            document.body.style.backgroundColor = ''; // elimină culoarea simplă
+        });
+
+        document.getElementById('btnText').addEventListener('click', function() {
+            indexText = (indexText + 1) % culoriText.length;
+            const paragrafe = document.querySelectorAll('.paragraf');
+            paragrafe.forEach(p => {
+                p.style.color = culoriText[indexText];
+            });
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator Vârstă - Zi/Lună/An</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            color: #333;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            width: 420px;
+            text-align: center;
+        }
+        h1 {
+            margin-bottom: 30px;
+            color: #5a67d8;
+        }
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            justify-content: center;
+        }
+        input[type="number"] {
+            width: 100px;
+            padding: 14px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 18px;
+            text-align: center;
+        }
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+        }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 14px 32px;
+            border-radius: 10px;
+            font-size: 17px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+        button:hover {
+            background: #5a67d8;
+            transform: translateY(-3px);
+        }
+        .rezultat {
+            margin-top: 30px;
+            padding: 25px;
+            background: #f8fafc;
+            border-radius: 12px;
+            font-size: 20px;
+            min-height: 80px;
+            line-height: 1.6;
+        }
+        .ani {
+            font-size: 48px;
+            font-weight: bold;
+            color: #667eea;
+            margin: 10px 0;
+        }
+        .error {
+            color: #e53e3e;
+            font-weight: bold;
+        }
+        .success {
+            color: #2f855a;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Calculator Vârstă</h1>
+        <p>Introdu data ta de naștere:</p>
+
+        <div class="input-group">
+            <div>
+                <label for="zi">Zi</label>
+                <input type="number" id="zi" min="1" max="31" placeholder="15" required>
+            </div>
+            <div>
+                <label for="luna">Lună</label>
+                <input type="number" id="luna" min="1" max="12" placeholder="6" required>
+            </div>
+            <div>
+                <label for="an">An</label>
+                <input type="number" id="an" min="1900" max="2025" placeholder="1995" required>
+            </div>
+        </div>
+
+        <button onclick="calculeazaVarsta()">Calculează vârsta mea</button>
+
+        <div class="rezultat" id="rezultat">
+            Completează toate câmpurile și apasă butonul pentru a afla câți ani ai!
+        </div>
+    </div>
+
+    <script>
+        function calculeazaVarsta() {
+            const zi = parseInt(document.getElementById('zi').value);
+            const luna = parseInt(document.getElementById('luna').value);
+            const an = parseInt(document.getElementById('an').value);
+            const rezultatDiv = document.getElementById('rezultat');
+
+            if (!zi || !luna || !an) {
+                rezultatDiv.innerHTML = '<span class="error">Te rog completează toate cele 3 câmpuri!</span>';
+                return;
+            }
+
+            if (luna < 1 || luna > 12) {
+                rezultatDiv.innerHTML = '<span class="error">Luna trebuie să fie între 1 și 12!</span>';
+                return;
+            }
+            if (zi < 1 || zi > 31) {
+                rezultatDiv.innerHTML = '<span class="error">Ziua trebuie să fie între 1 și 31!</span>';
+                return;
+            }
+            if (an < 1900 || an > new Date().getFullYear()) {
+                rezultatDiv.innerHTML = `<span class="error">Anul trebuie să fie între 1900 și ${new Date().getFullYear()}!</span>`;
+                return;
+            }
+
+            const dataNastere = new Date(an, luna - 1, zi);
+            if (dataNastere.getFullYear() !== an || 
+                dataNastere.getMonth() !== luna - 1 || 
+                dataNastere.getDate() !== zi) {
+                rezultatDiv.innerHTML = '<span class="error">Data introdusă nu este validă!<br>Ex: 31 aprilie sau 30 februarie nu există.</span>';
+                return;
+            }
+
+            const azi = new Date();
+
+            if (dataNastere > azi) {
+                rezultatDiv.innerHTML = '<span class="error">Nu te-ai născut încă! Data nu poate fi în viitor.</span>';
+                return;
+            }
+
+            let ani = azi.getFullYear() - dataNastere.getFullYear();
+            let luni = azi.getMonth() - dataNastere.getMonth();
+            let zile = azi.getDate() - dataNastere.getDate();
+
+            if (zile < 0) {
+                luni--;
+                const ultimaZiLunaTrecuta = new Date(azi.getFullYear(), azi.getMonth(), 0).getDate();
+                zile += ultimaZiLunaTrecuta;
+            }
+            if (luni < 0) {
+                ani--;
+                luni += 12;
+            }
+
+            const aTrecutZiuaDeNastere = (azi.getMonth() > dataNastere.getMonth()) || 
+                (azi.getMonth() === dataNastere.getMonth() && azi.getDate() >= dataNastere.getDate());
+            const varstaAni = aTrecutZiuaDeNastere ? ani : ani - 1;
+
+            let mesaj = `<div class="ani">${varstaAni}</div>`;
+            mesaj += `<p>Ai <strong>${varstaAni} ani</strong>`;
+
+            if (luni > 0 || zile > 0 || !aTrecutZiuaDeNastere) {
+                mesaj += `, ${luni} luni`;
+                if (zile > 0) mesaj += ` și ${zile} zile`;
+            }
+            mesaj += `</p>`;
+
+            const esteZiuaDeNastere = azi.getMonth() === dataNastere.getMonth() && 
+                                     azi.getDate() === dataNastere.getDate();
+            if (esteZiuaDeNastere) {
+                mesaj += `<p style="color:#e91e63; font-size:26px; margin-top:20px; font-weight:bold;">
+                    La mulți ani!!!<br>
+                    Astăzi împliniți ${varstaAni === 0 ? 'primul an' : varstaAni + ' ani'}!
+                </p>`;
+            }
+
+            rezultatDiv.innerHTML = mesaj;
+        }
+
+        document.getElementById('zi').addEventListener('input', calculeazaVarsta);
+        document.getElementById('luna').addEventListener('input', calculeazaVarsta);
+        document.getElementById('an').addEventListener('input', calculeazaVarsta);
+    </script>
+</body>
+</html>

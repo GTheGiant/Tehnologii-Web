@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Personalizat pe Imagine</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            color: #333;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            width: 600px;
+            text-align: center;
+        }
+        h1 {
+            margin-bottom: 20px;
+            color: #5a67d8;
+        }
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        input[type="file"] {
+            padding: 5px;
+        }
+        input[type="color"] {
+            width: 60px;
+            height: 40px;
+            padding: 0;
+            border: none;
+            cursor: pointer;
+        }
+        .coords {
+            display: flex;
+            gap: 10px;
+        }
+        .coords input {
+            width: 50%;
+        }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: 0.3s;
+        }
+        button:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+        }
+        canvas {
+            margin-top: 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            display: block;
+            margin: 20px auto 0;
+        }
+        .error {
+            color: red;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Adăugă Text pe Imagine</h1>
+
+        <div class="form-group">
+            <label for="imagine">Încarcă o imagine:</label>
+            <input type="file" id="imagine" accept="image/*">
+        </div>
+
+        <div class="form-group">
+            <label for="text">Text personalizat:</label>
+            <input type="text" id="text" placeholder="Introdu textul aici...">
+        </div>
+
+        <div class="form-group">
+            <label>Poziție text (coordonate X și Y):</label>
+            <div class="coords">
+                <input type="number" id="posX" placeholder="X (ex: 50)" min="0">
+                <input type="number" id="posY" placeholder="Y (ex: 100)" min="0">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Culoare text:</label>
+            <input type="color" id="culoare" value="#000000">
+        </div>
+
+        <div class="form-group">
+            <label for="dimensiune">Dimensiune font (px):</label>
+            <input type="number" id="dimensiune" value="30" min="10" max="100">
+        </div>
+
+        <button onclick="aplicaText()">Aplică Textul</button>
+
+        <canvas id="canvas" width="500" height="500"></canvas>
+
+        <div id="error" class="error"></div>
+    </div>
+
+    <script>
+        let img = null;
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const errorDiv = document.getElementById('error');
+
+        function clearError() {
+            errorDiv.textContent = '';
+        }
+
+        document.getElementById('imagine').addEventListener('change', function(event) {
+            clearError();
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    img = new Image();
+                    img.onload = function() {
+                        // Desenăm imaginea pe canvas, scalată să se potrivească
+                        const ratio = Math.min(canvas.width / img.width, canvas.height / img.height);
+                        const newWidth = img.width * ratio;
+                        const newHeight = img.height * ratio;
+                        ctx.clearRect(0, 0, canvas.width, canvas.height);
+                        ctx.drawImage(img, (canvas.width - newWidth) / 2, (canvas.height - newHeight) / 2, newWidth, newHeight);
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        function aplicaText() {
+            clearError();
+            if (!img) {
+                errorDiv.textContent = 'Te rog încarcă o imagine mai întâi!';
+                return;
+            }
+
+            const text = document.getElementById('text').value;
+            if (!text) {
+                errorDiv.textContent = 'Introdu un text!';
+                return;
+            }
+
+            const posX = parseInt(document.getElementById('posX').value) || 50;
+            const posY = parseInt(document.getElementById('posY').value) || 100;
+            const culoare = document.getElementById('culoare').value;
+            const dimensiune = parseInt(document.getElementById('dimensiune').value) || 30;
+
+            const ratio = Math.min(canvas.width / img.width, canvas.height / img.height);
+            const newWidth = img.width * ratio;
+            const newHeight = img.height * ratio;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(img, (canvas.width - newWidth) / 2, (canvas.height - newHeight) / 2, newWidth, newHeight);
+
+            ctx.font = `${dimensiune}px Arial`;
+            ctx.fillStyle = culoare;
+            ctx.fillText(text, posX, posY);
+        }
+
+        document.getElementById('text').addEventListener('input', aplicaText);
+        document.getElementById('posX').addEventListener('input', aplicaText);
+        document.getElementById('posY').addEventListener('input', aplicaText);
+        document.getElementById('culoare').addEventListener('change', aplicaText);
+        document.getElementById('dimensiune').addEventListener('input', aplicaText);
+    </script>
+</body>
+</html>

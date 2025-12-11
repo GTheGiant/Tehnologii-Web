@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deplasarea literelor spre stânga</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ed 100%);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            overflow: hidden;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 15px;
+            margin-top: 0;
+            text-align: center;
+        }
+        
+        .problem-description {
+            background-color: #e8f4fc;
+            border-left: 5px solid #3498db;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 0 10px 10px 0;
+            font-size: 17px;
+        }
+        
+        .problem-description strong {
+            color: #2c3e50;
+        }
+        
+        .example {
+            background-color: #fff9e6;
+            border-left: 5px solid #f39c12;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+            font-family: monospace;
+            font-size: 18px;
+        }
+        
+        .input-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 40px;
+            padding: 25px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .text-input-container {
+            flex: 2;
+            min-width: 300px;
+        }
+        
+        .controls {
+            flex: 1;
+            min-width: 250px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 16px;
+        }
+        
+        textarea {
+            width: 100%;
+            height: 150px;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            font-size: 18px;
+            font-family: monospace;
+            resize: vertical;
+            background-color: #fdfdfd;
+            transition: border-color 0.3s;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        
+        input {
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            font-size: 16px;
+            width: 100%;
+        }
+        
+        .buttons-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        button {
+            padding: 14px 20px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+            flex: 1;
+            min-width: 150px;
+        }
+        
+        .process-btn {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        .process-btn:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(41, 128, 185, 0.3);
+        }
+        
+        .reset-btn {
+            background-color: #e74c3c;
+            color: white;
+        }
+        
+        .reset-btn:hover {
+            background-color: #c0392b;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(192, 57, 43, 0.3);
+        }
+        
+        .example-btn {
+            background-color: #9b59b6;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+        }
+        
+        .example-btn:hover {
+            background-color: #8e44ad;
+            transform: translateY(-2px);
+        }
+        
+        .result-section {
+            margin-top: 30px;
+            padding: 25px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .visualization {
+            margin: 25px 0;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        
+        .visualization-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        
+        .text-display {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            min-height: 80px;
+            align-items: center;
+        }
+        
+        .char-box {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            font-size: 22px;
+            font-weight: 600;
+            border: 2px solid #ddd;
+            background-color: white;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .char-box::before {
+            content: attr(data-index);
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            font-size: 10px;
+            color: #7f8c8d;
+            font-weight: normal;
+        }
+        
+        .original-char {
+            border-color: #3498db;
+            background-color: #e8f4fc;
+        }
+        
+        .moved-char {
+            border-color: #2ecc71;
+            background-color: #e8f6f3;
+        }
+        
+        .first-to-last {
+            border-color: #f39c12;
+            background-color: #fef5e7;
+        }
+        
+        .arrow {
+            font-size: 24px;
+            color: #7f8c8d;
+            display: flex;
+            align-items: center;
+            margin: 0 5px;
+        }
+        
+        .result {
+            font-size: 19px;
+            font-weight: 600;
+            color: #2c3e50;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            border-left: 5px solid #3498db;
+            margin-top: 20px;
+            font-family: monospace;
+            text-align: center;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .highlight {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        
+        .error {
+            color: #e74c3c;
+            font-weight: 600;
+            margin-top: 10px;
+            padding: 12px;
+            background-color: #ffeaea;
+            border-radius: 8px;
+            border-left: 4px solid #e74c3c;
+        }
+        
+        .algorithm-explanation {
+            margin-top: 40px;
+            padding: 20px;
+            background-color: #f1f8e9;
+            border-radius: 10px;
+            border-left: 5px solid #8bc34a;
+        }
+        
+        .algorithm-explanation h3 {
+            color: #2c3e50;
+            margin-top: 0;
+        }
+        
+        .steps {
+            padding-left: 20px;
+        }
+        
+        .steps li {
+            margin-bottom: 10px;
+        }
+        
+        code {
+            background-color: #f8f9fa;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 16px;
+            border: 1px solid #e9ecef;
+        }
+        
+        @keyframes moveAnimation {
+            0% {
+                transform: translateX(0);
+            }
+            50% {
+                transform: translateX(-10px);
+                box-shadow: 0 0 10px rgba(46, 204, 113, 0.5);
+            }
+            100% {
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes firstToLastAnimation {
+            0% {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            50% {
+                transform: translateX(-100px);
+                opacity: 0.5;
+            }
+            100% {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .input-section {
+                flex-direction: column;
+            }
+            
+            .buttons-container {
+                flex-direction: column;
+            }
+            
+            button {
+                min-width: 100%;
+            }
+            
+            .char-box {
+                width: 40px;
+                height: 40px;
+                font-size: 18px;
+            }
+            
+            .container {
+                padding: 15px;
+            }
+        }
+        
+        .examples-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .step-by-step {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .step {
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: white;
+            border-radius: 5px;
+            border-left: 3px solid #3498db;
+        }
+        
+        .active-step {
+            background-color: #e8f4fc !important;
+            font-weight: 600 !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Deplasarea literelor spre stânga</h1>
+        
+        <div class="problem-description">
+            <p><strong>Problema:</strong> Se dă un text. Să se deplaseze spre stânga cu o poziție fiecare literă, astfel încât litera de pe poziția n să fie plasată pe poziția n-1, iar prima literă să devină ultima.</p>
+            <div class="example">
+                <strong>Exemplu:</strong> Pentru textul "tractor" se va afișa textul "ractort".
+            </div>
+            <p><strong>Explicație:</strong> Toate literele se mută cu o poziție spre stânga. Litera de pe prima poziție se mută pe ultima poziție.</p>
+        </div>
+        
+        <?php
+        // Inițializare variabile
+        $textInput = "tractor";
+        $resultText = "";
+        $error = "";
+        $activeStep = 1;
+        
+        // Exemple predefinite
+        $examples = [
+            "tractor" => "tractor",
+            "programare" => "programare",
+            "algoritm" => "algoritm",
+            "javascript" => "javascript",
+            "calculator" => "calculator"
+        ];
+        
+        // Funcție pentru deplasarea textului
+        function deplasareStanga($text) {
+            if (strlen($text) < 2) {
+                return $text;
+            }
+            
+            $firstChar = substr($text, 0, 1);
+            $restOfText = substr($text, 1);
+            
+            return $restOfText . $firstChar;
+        }
+        
+        // Funcție pentru afișarea textului ca caractere individuale
+        function displayTextAsChars($text, $isResult = false) {
+            $output = '';
+            $length = strlen($text);
+            
+            if ($length == 0) {
+                return '<div style="color: #7f8c8d;">' . ($isResult ? "Niciun rezultat" : "Niciun text introdus") . '</div>';
+            }
+            
+            for ($i = 0; $i < $length; $i++) {
+                $charClass = 'char-box';
+                
+                if ($isResult) {
+                    if ($i == $length - 1) {
+                        $charClass .= ' first-to-last';
+                    } else {
+                        $charClass .= ' moved-char';
+                    }
+                } else {
+                    $charClass .= ' original-char';
+                }
+                
+                $style = '';
+                if (!$isResult && $i == 0) {
+                    $style = 'style="border-color: #f39c12; background-color: #fef5e7;"';
+                }
+                
+                $output .= '<div class="' . $charClass . '" data-index="' . $i . '" ' . $style . '>' . htmlspecialchars($text[$i]) . '</div>';
+            }
+            
+            return $output;
+        }
+        
+        // Procesare formular
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Verifică dacă s-a făcut reset
+            if (isset($_POST['reset'])) {
+                $textInput = "";
+                $resultText = "";
+                $error = "";
+                $activeStep = 1;
+            }
+            // Verifică dacă s-a selectat un exemplu
+            elseif (isset($_POST['example'])) {
+                $exampleKey = $_POST['example'];
+                if (isset($examples[$exampleKey])) {
+                    $textInput = $examples[$exampleKey];
+                    $activeStep = 1;
+                }
+            }
+            // Procesare text normal
+            else {
+                $textInput = isset($_POST['textInput']) ? trim($_POST['textInput']) : "";
+                $activeStep = 1;
+                
+                if ($textInput === "") {
+                    $error = "Vă rugăm introduceți un text.";
+                } else {
+                    $activeStep = 2;
+                    
+                    if (strlen($textInput) < 2) {
+                        $resultText = $textInput;
+                        $error = "Textul are doar un caracter: \"$textInput\". Deplasarea nu are efect.";
+                        $activeStep = 6;
+                    } else {
+                        $activeStep = 3;
+                        $activeStep = 4;
+                        $activeStep = 5;
+                        $resultText = deplasareStanga($textInput);
+                        $activeStep = 6;
+                    }
+                }
+            }
+        } else {
+            // La prima încărcare, procesează textul implicit
+            $resultText = deplasareStanga($textInput);
+            $activeStep = 6;
+        }
+        ?>
+        
+        <form method="POST" action="">
+            <div class="input-section">
+                <div class="text-input-container">
+                    <label for="textInput">Introduceți textul:</label>
+                    <textarea id="textInput" name="textInput" placeholder="Introduceți textul aici..."><?php echo htmlspecialchars($textInput); ?></textarea>
+                    
+                    <?php if ($error): ?>
+                        <div class="error"><?php echo htmlspecialchars($error); ?></div>
+                    <?php endif; ?>
+                    
+                    <div class="examples-container">
+                        <p><strong>Exemple rapide:</strong></p>
+                        <?php foreach ($examples as $key => $value): ?>
+                            <button type="submit" name="example" value="<?php echo $key; ?>" class="example-btn"><?php echo $key; ?></button>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+                
+                <div class="controls">
+                    <div class="buttons-container">
+                        <button type="submit" name="process" class="process-btn">Deplasează spre stânga</button>
+                        <button type="submit" name="reset" class="reset-btn">Resetează</button>
+                    </div>
+                    
+                    <div class="step-by-step">
+                        <p><strong>Pași algoritm:</strong></p>
+                        <div class="step <?php echo $activeStep == 1 ? 'active-step' : ''; ?>" id="step1">1. Citește textul</div>
+                        <div class="step <?php echo $activeStep == 2 ? 'active-step' : ''; ?>" id="step2">2. Verifică dacă textul are cel puțin 2 caractere</div>
+                        <div class="step <?php echo $activeStep == 3 ? 'active-step' : ''; ?>" id="step3">3. Extrage prima literă</div>
+                        <div class="step <?php echo $activeStep == 4 ? 'active-step' : ''; ?>" id="step4">4. Mută fiecare literă cu o poziție spre stânga</div>
+                        <div class="step <?php echo $activeStep == 5 ? 'active-step' : ''; ?>" id="step5">5. Pune prima literă la sfârșit</div>
+                        <div class="step <?php echo $activeStep == 6 ? 'active-step' : ''; ?>" id="step6">6. Afișează rezultatul</div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        
+        <div class="result-section">
+            <h2>Rezultat</h2>
+            
+            <div class="visualization">
+                <div class="visualization-title">Vizualizarea deplasării:</div>
+                <div id="originalTextDisplay" class="text-display">
+                    <?php echo displayTextAsChars($textInput, false); ?>
+                </div>
+                
+                <div style="text-align: center; margin: 15px 0; font-size: 24px; color: #3498db;">↓</div>
+                
+                <div id="resultTextDisplay" class="text-display">
+                    <?php echo displayTextAsChars($resultText, true); ?>
+                </div>
+            </div>
+            
+            <div id="resultOutput" class="result">
+                <?php if ($resultText !== ""): ?>
+                    Textul deplasat: "<?php echo htmlspecialchars($resultText); ?>"
+                <?php else: ?>
+                    Rezultatul va apărea aici...
+                <?php endif; ?>
+            </div>
+            
+            <div class="algorithm-explanation">
+                <h3>Explicația algoritmului</h3>
+                <ol class="steps">
+                    <li>Se citește textul de intrare</li>
+                    <li>Dacă textul are mai puțin de 2 caractere, se returnează textul original (nu are sens deplasarea)</li>
+                    <li>Se extrage prima literă a textului: <code>firstChar = substr(text, 0, 1)</code></li>
+                    <li>Se extrage restul textului fără prima literă: <code>restOfText = substr(text, 1)</code></li>
+                    <li>Se combină restul textului cu prima literă la sfârșit: <code>result = restOfText . firstChar</code></li>
+                    <li>Se afișează rezultatul</li>
+                </ol>
+                <p><strong>Implementare PHP:</strong></p>
+                <pre style="background-color: #f8f9fa; padding: 15px; border-radius: 8px; overflow-x: auto;">
+function deplasareStanga($text) {
+    if (strlen($text) < 2) return $text;
+    
+    // Extrage prima literă
+    $firstChar = substr($text, 0, 1);
+    
+    // Extrage restul textului
+    $restOfText = substr($text, 1);
+    
+    // Combină restul cu prima literă la sfârșit
+    return $restOfText . $firstChar;
+}</pre>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

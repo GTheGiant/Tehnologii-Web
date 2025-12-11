@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pagina șirului aₙ = n² + 1</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7fa;
+            margin: 40px;
+            text-align: center;
+        }
+        h1 {
+            color: #2c3e50;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        input, button {
+            padding: 10px;
+            font-size: 16px;
+            margin: 10px;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #bdc3c7;
+            padding: 12px;
+            text-align: center;
+        }
+        th {
+            background-color: #3498db;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Șirul aₙ = n² + 1</h1>
+    <p>Introdu numărul de termeni pe care vrei să-i vezi:</p>
+    <input type="number" id="kInput" min="1" value="10" placeholder="ex: 10">
+    <button onclick="genereazaTabel()">Afișează termenii</button>
+    <div id="rezultat"></div>
+</div>
+<script>
+function genereazaTabel() {
+    const k = parseInt(document.getElementById("kInput").value);
+    if (isNaN(k) || k <= 0 || !Number.isInteger(k)) {
+        alert("Te rog introdu un număr natural pozitiv!");
+        return;
+    }
+    let tabel = `
+        <h2>Primii ${k} termeni ai șirului aₙ = n² + 1</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>n</th>
+                    <th>Calcul</th>
+                    <th>aₙ</th>
+                </tr>
+            </thead>
+            <tbody>`;
+
+    for (let n = 1; n <= k; n++) {
+        let an = n * n + 1;
+        tabel += `
+            <tr>
+                <td>${n}</td>
+                <td>${n}² + 1</td>
+                <td><strong>${an}</strong></td>
+            </tr>`;
+    }
+    tabel += `
+            </tbody>
+        </table>`;
+
+    document.getElementById("rezultat").innerHTML = tabel;
+}
+window.onload = function() {
+    genereazaTabel();
+};
+</script>
+
+</body>
+</html>
